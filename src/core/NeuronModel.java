@@ -23,11 +23,6 @@ public double getU()
 
 	public NeuronModel()
 	{
-		//Initial condition
-		v = -70;
-		u = 0;
-		I = 0;
-
 		//Model parameters
 		a = 0.02;
 		b = 0.2;
@@ -36,6 +31,10 @@ public double getU()
 		v_th=30;
 		dt=0.1;
 
+		//Initial condition
+		v = -65;
+		u = b*v;
+		I = 0;
 	}
 
 	//recalculate performs recalculation of a model state for the next tick
@@ -84,6 +83,6 @@ public double getU()
 
 	public void setI(double i)
 	{
-		I = i;
+		this.I = i;
 	}
 }

@@ -35,7 +35,7 @@ public class Neuron
 				I+=spike.getVoltage(); //TODO check voltage-current relationship on synaptic connection
 		}
 
-		neuronModel.setI(I); //sets neural current to sum of arrived spike currents
+		//neuronModel.setI(I); //sets neural current to sum of arrived spike currents
 		neuronModel.recalculate(); //computes new state of a neuron
 
 		//determine if spiking and if so, create a spike targeted for all postsynaptic neurons
@@ -45,7 +45,7 @@ public class Neuron
 			for (Neuron neuron: postsynapticNeurons
 				 )
 			{
-				addIncomingSpike(new Spike(neuronModel.getV(), 5));
+				//addIncomingSpike(new Spike(neuronModel.getV(), 1));
 			}
 		}
 	}
@@ -65,5 +65,10 @@ public class Neuron
 	public boolean isSpiking()
 	{
 		return neuronModel.isSpiking();
+	}
+
+	public void setI(double I)
+	{
+		neuronModel.setI(I);
 	}
 }

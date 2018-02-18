@@ -62,11 +62,30 @@ public class NetworkTest
 		{
 			if (random.nextInt(100) < 20)
 			{
-				neuron.addIncomingSpike(new Spike(30, 2));
+				//neuron.addIncomingSpike(new Spike(30, 2));
 			}
 		}
 		for (int i = 0; i < 1000; i++)
 		{
+			//calculate thalamic input
+			double I = 0;
+			for (int j = 0; j < neuronList.size(); j++)
+			{
+				Neuron neuron = neuronList.get(j);
+				if (neuron.isSpiking())
+				{
+					I+=0.5*random.nextGaussian();
+				}
+			}
+
+			//add random thalamic input
+			for (int j = 0; j < neuronList.size(); j++)
+			{
+				Neuron neuron = neuronList.get(j);
+				double kek = 5*random.nextGaussian()+I+10;
+				neuron.setI(kek);
+			}
+
 			//simulate each neuron
 			for (int j = 0; j < neuronList.size(); j++)
 			{
@@ -77,6 +96,7 @@ public class NetworkTest
 					dataset.add(j,i); //X axis charts neurons by number and Y axis charts their spike timings
 				}
 			}
+
 		}
 		Instant after = Instant.now();
 		Duration elapsed = Duration.between(before, after);
