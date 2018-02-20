@@ -1,10 +1,6 @@
 package test;
 
 import core.Neuron;
-import core.NeuronModel;
-import core.Spike;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 
 import javax.swing.*;
@@ -93,7 +89,7 @@ public class NetworkTest
 				neuron.simulateTick();
 				if (neuron.isSpiking())
 				{
-					dataset.add(j,i); //X axis charts neurons by number and Y axis charts their spike timings
+					dataset.add(i,j); //Y axis charts neurons by number and X axis charts their spike timings
 				}
 			}
 

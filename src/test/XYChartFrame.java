@@ -23,7 +23,7 @@ public class XYChartFrame extends JFrame
 		collection.addSeries(series);
 		XYDataset dataset = (XYDataset) collection;
 
-		JFreeChart chart = ChartFactory.createScatterPlot("Simulation", "Neuron", "Time(ms)", dataset);
+		JFreeChart chart = ChartFactory.createScatterPlot("Simulation", "Time(ms)", "Neuron", dataset);
 		XYPlot plot = (XYPlot)chart.getPlot();
 		plot.setBackgroundPaint(new Color(255,228,196));
 

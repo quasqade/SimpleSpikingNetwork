@@ -7,20 +7,32 @@ import java.util.Set;
 
 /**
  * Created by user on 16-Feb-18.
- * Neuron wraps around NeuronModel, adding connections to other neurons, synaptic delay and learning mechanisms
+ * Neuron wraps around IzhikevichNeuronModel, adding connections to other neurons, synaptic delay and learning mechanisms
  */
 public class Neuron
 {
+	public enum NeuronType{IZHIKEVICH};
 	private List<Spike> incomingSpikes; //incomingSpikes is a list of Spikes that have been sent through axons of this neuron
-	private NeuronModel neuronModel; //neuronModel is a NeuronModel that performs simulation of neuron state
+
+	public NeuronModel getNeuronModel() {
+		return neuronModel;
+	}
+
+	private NeuronModel neuronModel; //neuronModel is a IzhikevichNeuronModel that performs simulation of neuron state
 	private Set<Neuron> postsynapticNeurons; //postsynapticNeurons is a list of Neurons that are connected to this neurons' dendrites
 	//TODO maybe Set is not necessary
 
-	public Neuron()
+	public Neuron(NeuronType type)
 	{
 		incomingSpikes = new ArrayList<>();
-		neuronModel = new NeuronModel();
 		postsynapticNeurons = new HashSet<>();
+		switch (type)
+		{
+
+			case IZHIKEVICH:
+				neuronModel = new IzhikevichNeuronModel();
+				break;
+		}
 	}
 
 	//simulateTick advances incoming spikes, sets input current accordingly and performs simulation on a model
