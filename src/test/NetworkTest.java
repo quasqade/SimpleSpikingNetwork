@@ -12,7 +12,8 @@ import java.util.Random;
 
 /**
  * Created by user on 16-Feb-18.
- * NetworkTest is a way to test a network using models defined in core package
+ * NetworkTest is a way to test a random network using models defined in core package. It does not utilize Synapses
+ * or spikes, it simply tests neural model and how a group of interconnected neurons behaves.
  */
 public class NetworkTest
 {
@@ -24,7 +25,7 @@ public class NetworkTest
 		List<Neuron> neuronList = new ArrayList<>();
 		for (int i = 0; i< 1000; i++)
 		{
-			neuronList.add(new Neuron());
+			neuronList.add(new Neuron(Neuron.NeuronType.IZHIKEVICH, 5));
 		}
 
 		//randomly interconnect them

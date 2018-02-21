@@ -12,20 +12,17 @@ import java.util.Set;
 public class Neuron
 {
 	public enum NeuronType{IZHIKEVICH};
-	private List<Spike> incomingSpikes; //incomingSpikes is a list of Spikes that have been sent through axons of this neuron
-
-	public NeuronModel getNeuronModel() {
-		return neuronModel;
-	}
-
+	private List<Synapse> preSynapses; //preSynapses is a list of Synapses connecting to this neuron
+	private List<Synapse> postSynapses; //postSynapses is a list of Synapses originating from this neuron
 	private NeuronModel neuronModel; //neuronModel is a IzhikevichNeuronModel that performs simulation of neuron state
-	private Set<Neuron> postsynapticNeurons; //postsynapticNeurons is a list of Neurons that are connected to this neurons' dendrites
-	//TODO maybe Set is not necessary
+	private int postsynapticDelay; //postsynapticDelay determines what default delay should be used for axons
 
-	public Neuron(NeuronType type)
+
+	public Neuron(NeuronType type, int postsynapticDelay)
 	{
-		incomingSpikes = new ArrayList<>();
-		postsynapticNeurons = new HashSet<>();
+		preSynapses = new ArrayList<>();
+		postSynapses = new ArrayList<>();
+		this.postsynapticDelay = postsynapticDelay;
 		switch (type)
 		{
 
@@ -40,11 +37,16 @@ public class Neuron
 	{
 		double I=0; //I is a sum of presynaptic currents
 
-		for (Spike spike: incomingSpikes
-			 )
+		for (Synapse preSynapse: preSynapses)
 		{
-			if (!spike.advance())
-				I+=spike.getVoltage(); //TODO check voltage-current relationship on synaptic connection
+			preSynapse.propagateSpikes();
+			List<Spike> arrivedSpikes = preSynapse.getArrivedSpikes();
+
+			for (Spike spike: arrivedSpikes
+				 )
+			{
+				I+=spike.getVoltage();
+			}
 		}
 
 		//neuronModel.setI(I); //sets neural current to sum of arrived spike currents
@@ -54,22 +56,19 @@ public class Neuron
 		//TODO randomize or otherwise vary delay
 		if (neuronModel.isSpiking())
 		{
-			for (Neuron neuron: postsynapticNeurons
+			for (Synapse postSynapse: postSynapses
 				 )
 			{
-				//addIncomingSpike(new Spike(neuronModel.getV(), 1));
+				postSynapse.addSpike(new Spike(neuronModel.getV()));
 			}
 		}
 	}
 
-	public void addIncomingSpike(Spike spike)
-	{
-		incomingSpikes.add(spike);
-	}
-
 	public void addPostsynapticNeuron(Neuron neuron)
 	{
-		this.postsynapticNeurons.add(neuron);
+		Synapse synapse = new Synapse(this, neuron, postsynapticDelay);
+		this.postSynapses.add(synapse);
+		neuron.addPreSynapse(synapse);
 	}
 
 
@@ -82,5 +81,24 @@ public class Neuron
 	public void setI(double I)
 	{
 		neuronModel.setI(I);
+	}
+
+	public NeuronModel getNeuronModel() {
+		return neuronModel;
+	}
+
+	public void addPreSynapse(Synapse synapse)
+	{
+		preSynapses.add(synapse);
+	}
+
+	public List<Synapse> getPreSynapses()
+	{
+		return preSynapses;
+	}
+
+	public List<Synapse> getPostSynapses()
+	{
+		return postSynapses;
 	}
 }

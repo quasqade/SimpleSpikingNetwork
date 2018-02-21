@@ -9,10 +9,18 @@ public class Spike
 	private int counter;
 	private double voltage;
 
+	//this constructor is used if there is a need to explicitly define delay of a given Spike without Synapse
+	//TODO deprecate
 	public Spike(double voltage, int counter)
 	{
 		this.voltage = voltage;
 		this.counter = counter;
+	}
+
+	//this constructor is used to create a Spike of undefined delay to be defined by Synapse
+	public Spike(double voltage)
+	{
+		this.voltage = voltage;
 	}
 
 	//advance decrements a counter representing how many ticks the spike has left to travel and returns true

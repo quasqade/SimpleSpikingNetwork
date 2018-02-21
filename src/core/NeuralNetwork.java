@@ -50,13 +50,13 @@ public class NeuralNetwork
 		neuronSet = new HashSet<>();
 		for (int i = 0; i < size; i++)
 		{
-			neuronSet.add(new Neuron(Neuron.NeuronType.IZHIKEVICH));
+			neuronSet.add(new Neuron(Neuron.NeuronType.IZHIKEVICH, 5));
 		}
 	}
 
 	public boolean addLayer(int size, int index, int probability)
 	{
-
+		return true;
 	}
 
 
