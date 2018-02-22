@@ -1,4 +1,4 @@
-package core;
+package core.synapse;
 
 /**
  * Created by user on 16-Feb-18.

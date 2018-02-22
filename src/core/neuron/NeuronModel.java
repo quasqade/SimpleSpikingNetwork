@@ -1,4 +1,4 @@
-package core;
+package core.neuron;
 
 public interface NeuronModel {
     public double getV();

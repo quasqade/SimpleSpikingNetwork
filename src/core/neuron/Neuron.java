@@ -1,9 +1,10 @@
-package core;
+package core.neuron;
+
+import core.synapse.Spike;
+import core.synapse.Synapse;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by user on 16-Feb-18.

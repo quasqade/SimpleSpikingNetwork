@@ -1,4 +1,6 @@
-package core;
+package core.network;
+
+import core.neuron.Neuron;
 
 import java.util.HashSet;
 import java.util.List;

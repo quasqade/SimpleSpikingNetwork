@@ -1,6 +1,6 @@
 package test;
 
-import core.Neuron;
+import core.neuron.Neuron;
 
 /**
  * Created by user on 21-Feb-18.

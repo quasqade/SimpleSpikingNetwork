@@ -1,4 +1,4 @@
-package core;
+package core.neuron;
 
 /**
  * Created by user on 16-Feb-18.

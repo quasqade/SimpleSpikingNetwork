@@ -1,6 +1,6 @@
 package test;
 
-import core.Neuron;
+import core.neuron.Neuron;
 import org.jfree.data.xy.XYSeries;
 
 import javax.swing.*;
@@ -62,7 +62,7 @@ public class NetworkTest
 				//neuron.addIncomingSpike(new Spike(30, 2));
 			}
 		}
-		for (int i = 0; i < 1000; i++)
+		for (int i = 0; i < 10000; i++)
 		{
 			//calculate thalamic input
 			double I = 0;
@@ -79,7 +79,8 @@ public class NetworkTest
 			for (int j = 0; j < neuronList.size(); j++)
 			{
 				Neuron neuron = neuronList.get(j);
-				double kek = 5*random.nextGaussian()+I+10;
+				//TODO determine why neurons are not spiking without additional stimulation
+				double kek = 5*random.nextGaussian()+I+10; //+10 is not reflective of original Izhikevich example
 				neuron.setI(kek);
 			}
 

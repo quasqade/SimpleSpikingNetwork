@@ -1,4 +1,6 @@
-package core;
+package core.synapse;
+
+import core.neuron.Neuron;
 
 import java.util.ArrayList;
 import java.util.List;
