@@ -57,4 +57,19 @@ public class Synapse
 		}
 		return result;
 	}
+
+	public int getDelay()
+	{
+		return delay;
+	}
+
+	public Neuron getPresynaptic()
+	{
+		return presynaptic;
+	}
+
+	public Neuron getPostsynaptic()
+	{
+		return postsynaptic;
+	}
 }

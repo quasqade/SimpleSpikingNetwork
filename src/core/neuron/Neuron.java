@@ -93,6 +93,7 @@ public class Neuron
 		preSynapses.add(synapse);
 	}
 
+
 	public List<Synapse> getPreSynapses()
 	{
 		return preSynapses;
