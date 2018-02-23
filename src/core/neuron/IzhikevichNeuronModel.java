@@ -6,21 +6,12 @@ package core.neuron;
  */
 public class IzhikevichNeuronModel implements NeuronModel
 {
-public double getV()
-{
-	return v;
-}
-
-public double getU()
-{
-	return u;
-}
-
 	private double v, u, I; //model state variables
 	private double a, b, c, d, v_th, dt; //model parameters
 
 	private boolean spiking = false; //on the tick that neuron spikes this is set to true, otherwise false
 
+	//default constructor creates a regular spiking neuron as defined by Izhikevich
 	public IzhikevichNeuronModel()
 	{
 		//Model parameters
@@ -35,6 +26,21 @@ public double getU()
 		v = -65;
 		u = b*v;
 		I = 0;
+	}
+
+	//constructor accepts two parameter objects defining neuron parameters and initial conditions
+	public IzhikevichNeuronModel(IzhikevichParameters parameters, IzhikevichIC initialConditions)
+	{
+		this.a=parameters.a();
+		this.b=parameters.b();
+		this.c=parameters.c();
+		this.d=parameters.d();
+		this.v_th=parameters.v_th();
+		this.dt=parameters.dt();
+
+		this.v=initialConditions.v();
+		this.u=initialConditions.u();
+		this.I=initialConditions.I();
 	}
 
 	//recalculate performs recalculation of a model state for the next tick
@@ -85,4 +91,15 @@ public double getU()
 	{
 		this.I = i;
 	}
+
+	public double getV()
+	{
+		return v;
+	}
+
+	public double getU()
+	{
+		return u;
+	}
+
 }

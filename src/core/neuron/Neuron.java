@@ -88,7 +88,12 @@ public class Neuron
 		return neuronModel;
 	}
 
-	public void addPreSynapse(Synapse synapse)
+	public void setNeuronModel(NeuronModel neuronModel)
+	{
+		this.neuronModel = neuronModel;
+	}
+
+public void addPreSynapse(Synapse synapse)
 	{
 		preSynapses.add(synapse);
 	}

@@ -13,9 +13,10 @@ import javax.swing.*;
  */
 public class LineChartFrame extends JFrame
 {
-	public LineChartFrame(DefaultCategoryDataset dataset)
+	public LineChartFrame(DefaultCategoryDataset dataset, String title, String xLabel, String yLabel)
 	{
-		JFreeChart chart = ChartFactory.createLineChart("Simulation", "Step", "Voltage", dataset);
+		super("Result");
+		JFreeChart chart = ChartFactory.createLineChart(title, xLabel, yLabel, dataset);
 		ChartPanel panel = new ChartPanel(chart);
 		setContentPane(panel);
 		pack();

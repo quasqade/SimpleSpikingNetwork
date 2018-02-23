@@ -105,7 +105,7 @@ public class NetworkTest
 			@Override
 			public void run()
 			{
-				new XYChartFrame(dataset);
+				new XYChartFrame(dataset, "Random connections", "Time (ms)", "Neuron", XYChartFrame.MarkerType.SMALL_CROSS);
 			}
 		});
 

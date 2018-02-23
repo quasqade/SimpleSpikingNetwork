@@ -18,18 +18,32 @@ import java.awt.geom.Rectangle2D;
  */
 public class XYChartFrame extends JFrame
 {
-	public XYChartFrame(XYSeries series)
+	public enum MarkerType {SMALL_CROSS, TINY_DOT}
+
+	public XYChartFrame(XYSeries series, String title, String xLabel, String yLabel, MarkerType markerType)
 	{
 		super("Result");
 		XYSeriesCollection collection = new XYSeriesCollection();
 		collection.addSeries(series);
 		XYDataset dataset = (XYDataset) collection;
 
-		JFreeChart chart = ChartFactory.createScatterPlot("Simulation", "Time(ms)", "Neuron", dataset);
+		JFreeChart chart = ChartFactory.createScatterPlot(title, xLabel, yLabel, dataset);
 		XYPlot plot = (XYPlot)chart.getPlot();
-		plot.setBackgroundPaint(new Color(255,228,196));
-		Shape marker = ShapeUtilities.createDiagonalCross((float)0.2,(float)0.2);
+		plot.setBackgroundPaint(new Color(255,255,255));
+		Shape marker = ShapeUtilities.createDiamond(1);
+		switch (markerType)
+		{
+			case SMALL_CROSS:
+				marker = ShapeUtilities.createDiagonalCross((float)0.2,(float)0.2);
+				plot.getRenderer().setSeriesPaint(0, Color.red);
+				break;
+			case TINY_DOT:
+				marker = ShapeUtilities.createDiamond((float)0.2);
+				plot.getRenderer().setSeriesPaint(0, Color.gray);
+				break;
+		}
 		plot.getRenderer().setSeriesShape(0, marker);
+
 
 		//create Panel
 		ChartPanel panel = new ChartPanel(chart);
