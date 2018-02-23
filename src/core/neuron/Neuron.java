@@ -1,7 +1,9 @@
 package core.neuron;
 
+import core.synapse.STDPSynapse;
 import core.synapse.Spike;
 import core.synapse.Synapse;
+import core.synapse.SynapseType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,9 +67,24 @@ public class Neuron
 		}
 	}
 
-	public void addPostsynapticNeuron(Neuron neuron)
+	public void addPostsynapticNeuron(Neuron neuron, SynapseType type)
 	{
-		Synapse synapse = new Synapse(this, neuron, postsynapticDelay);
+		Synapse synapse;
+		switch (type)
+		{
+			case SIMPLE:
+				synapse = new Synapse(this, neuron, postsynapticDelay);
+				break;
+			case STDP:
+				synapse = new STDPSynapse(this, neuron, postsynapticDelay);
+				break;
+			default:
+				System.err.println("Unrecognized synapse type!");
+				synapse=null;
+				System.exit(1);
+				break;
+		}
+
 		this.postSynapses.add(synapse);
 		neuron.addPreSynapse(synapse);
 	}

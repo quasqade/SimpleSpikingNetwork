@@ -1,6 +1,7 @@
 package test;
 
 import core.neuron.Neuron;
+import core.synapse.SynapseType;
 import org.jfree.data.xy.XYSeries;
 
 import javax.swing.*;
@@ -42,7 +43,7 @@ public class NetworkTest
 				if (random.nextInt(100)<connectionChance)
 				{
 					//connect neuron i to j
-					neuronList.get(i).addPostsynapticNeuron(neuronList.get(j));
+					neuronList.get(i).addPostsynapticNeuron(neuronList.get(j), SynapseType.SIMPLE);
 				}
 			}
 		}

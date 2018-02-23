@@ -5,6 +5,7 @@ import core.neuron.IzhikevichNeuronModel;
 import core.neuron.IzhikevichParameters;
 import core.neuron.Neuron;
 import core.synapse.STDPSynapse;
+import core.synapse.SynapseType;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 
@@ -29,21 +30,19 @@ public class STDPTest
 
 		//regular spiking Izhikevich neuron
 		final IzhikevichParameters izhikevichParameters = new IzhikevichParameters(0.02, 0.2, -65, 2, 30, 0.1);
-		final IzhikevichIC izhikevichIC = new IzhikevichIC(-65, -13, 0); //ICs correspond to a resting state
+		final IzhikevichIC izhikevichIC = new IzhikevichIC(-65, -13, 0); //ICs as defined by Izhikevich
 
 		Neuron postsynaptic = new Neuron(Neuron.NeuronType.IZHIKEVICH, 5); //postsynaptic neuron that will be firing constantly.
 		postsynaptic.setNeuronModel(new IzhikevichNeuronModel(izhikevichParameters, izhikevichIC));
 		List<Neuron> presynapticList = new ArrayList<>();
 
-		//create presynaptic neurons
-
-
+		//create presynaptic neurons and connect them
 		for (int i = 0; i<PRESYNAPTIC_AMOUNT; i++)
 		{
 			Neuron neuron = new Neuron(Neuron.NeuronType.IZHIKEVICH, 1); //create a presynaptic neuron
 			neuron.setNeuronModel(new IzhikevichNeuronModel(izhikevichParameters, izhikevichIC));
 			presynapticList.add(neuron);
-			neuron.addPostsynapticNeuron(postsynaptic); //connect neurons
+			neuron.addPostsynapticNeuron(postsynaptic, SynapseType.STDP); //connect neurons
 		}
 
 
