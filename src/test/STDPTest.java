@@ -26,7 +26,7 @@ public class STDPTest
 	{
 		//be careful choosing lower currents, while lowering rate of spiking, floating point errors can lead to neuron desync
 		final int INJECTED_CURRENT = 10; //Injected current is I in Izhikevich equations, this value affects the rate of spiking
-		final int DELAY_VARIATION = 1; //how many ms of delay there should be between different presynaptic neurons
+		final int DELAY_VARIATION = 2; //how many ms of delay there should be between different presynaptic neurons
 		final int PRESYNAPTIC_AMOUNT = 51; //how many presynaptic neurons there are
 
 		//regular spiking Izhikevich neuron
@@ -59,7 +59,7 @@ public class STDPTest
 		DefaultCategoryDataset postSynapticVoltage = new DefaultCategoryDataset(); //recording postsynaptic voltage
 		DefaultCategoryDataset synapticWeights = new DefaultCategoryDataset(); //recording weights of synapses
 
-		for (int i = 0; i < 10000; i++)
+		for (int i = 0; i < 1000; i++)
 		{
 			//if we reached tick for postsynaptic injection, inject current
 			if (i==postsynapticInjection)
@@ -80,6 +80,7 @@ public class STDPTest
 			}
 
 			//simulate all neurons
+			//TODO rewrite with parallel streams for better performance (at least simulation)
 			for (Neuron presynaptic: presynapticList
 				 )
 			{
@@ -113,7 +114,10 @@ public class STDPTest
 		{
 			STDPSynapse casted = (STDPSynapse)synapse;
 			double finalWeight = casted.getWeight();
-			finalWeightSeries.add(postsynaptic.getPreSynapses().indexOf(synapse), finalWeight);
+			double spikeDifference = casted.getPostsynapticLastSpike() - casted.getPresynapticLastSpike();
+			if (Math.abs(spikeDifference)>30)
+				continue;
+			finalWeightSeries.add(spikeDifference, finalWeight);
 		}
 
 		//Create and show charts
