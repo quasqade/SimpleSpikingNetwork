@@ -5,6 +5,7 @@ import core.neuron.IzhikevichNeuronModel;
 import core.neuron.IzhikevichParameters;
 import core.neuron.Neuron;
 import core.synapse.STDPSynapse;
+import core.synapse.Synapse;
 import core.synapse.SynapseType;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
@@ -24,8 +25,8 @@ public class STDPTest
 	public static void main(String[] args)
 	{
 		//be careful choosing lower currents, while lowering rate of spiking, floating point errors can lead to neuron desync
-		final int INJECTED_CURRENT = 30; //Injected current is I in Izhikevich equations, this value affects the rate of spiking
-		final int DELAY_VARIATION = 2; //how many ms of delay there should be between different presynaptic neurons
+		final int INJECTED_CURRENT = 10; //Injected current is I in Izhikevich equations, this value affects the rate of spiking
+		final int DELAY_VARIATION = 1; //how many ms of delay there should be between different presynaptic neurons
 		final int PRESYNAPTIC_AMOUNT = 51; //how many presynaptic neurons there are
 
 		//regular spiking Izhikevich neuron
@@ -54,10 +55,11 @@ public class STDPTest
 		int nextInjection = 0;
 		int nextInjectedPresynaptic = 0;
 		final int postsynapticInjection = PRESYNAPTIC_AMOUNT*DELAY_VARIATION/2;
-		XYSeries presynapticSpikes = new XYSeries("Simulation"); //recording presynaptic spikes
+		XYSeries presynapticSpikes = new XYSeries("Spike"); //recording presynaptic spikes
 		DefaultCategoryDataset postSynapticVoltage = new DefaultCategoryDataset(); //recording postsynaptic voltage
+		DefaultCategoryDataset synapticWeights = new DefaultCategoryDataset(); //recording weights of synapses
 
-		for (int i = 0; i < 1000; i++)
+		for (int i = 0; i < 10000; i++)
 		{
 			//if we reached tick for postsynaptic injection, inject current
 			if (i==postsynapticInjection)
@@ -84,7 +86,7 @@ public class STDPTest
 				presynaptic.simulateTick();
 				if (presynaptic.isSpiking())
 				{
-					System.out.println("Neuron " + presynapticList.indexOf(presynaptic) + " is spiking at " + i + " ms.");
+					//System.out.println("Neuron " + presynapticList.indexOf(presynaptic) + " is spiking at " + i + " ms.");
 					presynapticSpikes.add(i,presynapticList.indexOf(presynaptic));
 				}
 			}
@@ -93,10 +95,28 @@ public class STDPTest
 			postSynapticVoltage.addValue(postsynaptic.getNeuronModel().getV(), "Membrane Voltage", Integer.toString(i));
 			if (postsynaptic.isSpiking())
 			{
-				System.out.println("Postsynaptic neuron is spiking at " + i + " ms.");
+				//System.out.println("Postsynaptic neuron is spiking at " + i + " ms.");
+			}
+
+			for (int j = 0; j < postsynaptic.getPreSynapses().size(); j++)
+			{
+				STDPSynapse casted = (STDPSynapse)postsynaptic.getPreSynapses().get(j);
+				synapticWeights.addValue(casted.getWeight(), Integer.toString(j), Integer.toString(i));
 			}
 		}
 
+
+		//record final weights and difference in timings
+		XYSeries finalWeightSeries = new XYSeries("Weight");
+		for (Synapse synapse: postsynaptic.getPreSynapses()
+			 )
+		{
+			STDPSynapse casted = (STDPSynapse)synapse;
+			double finalWeight = casted.getWeight();
+			finalWeightSeries.add(postsynaptic.getPreSynapses().indexOf(synapse), finalWeight);
+		}
+
+		//Create and show charts
 
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -113,6 +133,24 @@ public class STDPTest
 			public void run()
 			{
 				new LineChartFrame(postSynapticVoltage, "Postsynaptic voltage", "Time (ms)", "Voltage (mV)");
+			}
+		});
+
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				new LineChartFrame(synapticWeights, "Synaptic weights", "Time (ms)", "Weight");
+			}
+		});
+
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				new XYChartFrame(finalWeightSeries, "Final weights vs timing difference", "t_post - t_pre (ms)", "Final weight", XYChartFrame.MarkerType.SMALL_CROSS);
 			}
 		});
 	}

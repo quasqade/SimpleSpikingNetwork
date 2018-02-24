@@ -17,6 +17,7 @@ public class LineChartFrame extends JFrame
 	{
 		super("Result");
 		JFreeChart chart = ChartFactory.createLineChart(title, xLabel, yLabel, dataset);
+		chart.removeLegend();
 		ChartPanel panel = new ChartPanel(chart);
 		setContentPane(panel);
 		pack();

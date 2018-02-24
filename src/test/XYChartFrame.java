@@ -28,6 +28,7 @@ public class XYChartFrame extends JFrame
 		XYDataset dataset = (XYDataset) collection;
 
 		JFreeChart chart = ChartFactory.createScatterPlot(title, xLabel, yLabel, dataset);
+		chart.removeLegend();
 		XYPlot plot = (XYPlot)chart.getPlot();
 		plot.setBackgroundPaint(new Color(255,255,255));
 		Shape marker = ShapeUtilities.createDiamond(1);

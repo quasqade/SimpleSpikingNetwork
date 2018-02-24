@@ -10,6 +10,8 @@ public class STDPSynapse extends Synapse
 	private int counter; //counts how many ticks have elapsed
 	private int presynapticLastSpike; //last presynaptic spike timing
 	private int postsynapticLastSpike; //last postynaptic spike timing
+	private boolean presynapticLastSpikeRegistered=true;
+	private boolean postSynapticLastSpikeRegistered=true;
 
 	public STDPSynapse(Neuron presynaptic, Neuron postsynaptic, int delay)
 	{
@@ -19,18 +21,21 @@ public class STDPSynapse extends Synapse
 		aPlus = 0.01;
 		aMinus = 0.012;
 
-		weightMin=0;
-		weightMax = 0.0000001;
+		weightMin=-1;
+		weightMax=1;
 
-		weight=0.00000005;
+		weight=0;
 	}
 
+	//Replaces spike that has been added to a new one with voltage modified by synaptic weight
 	@Override
 	public void addSpike(Spike spike)
 	{
-		super.addSpike(new Spike(spike.getVoltage()*weight, super.getDelay()));
+		super.addSpike(new Spike(spike.getVoltage()*0, super.getDelay()));
 	}
 
+	//Adds weight modification rule to a synapse
+	//TODO possibly store last spike timings in neurons themselves, while this wastes memory for simple synapses, it saves it for STDP
 	@Override
 	public void propagateSpikes()
 	{
@@ -42,16 +47,20 @@ public class STDPSynapse extends Synapse
 		if (super.getPostsynaptic().isSpiking())
 		{
 			postsynapticLastSpike = counter;
+			postSynapticLastSpikeRegistered = false;
 			updateWeights=true;
 		}
 		if (super.getPresynaptic().isSpiking())
 		{
 			presynapticLastSpike = counter;
+			presynapticLastSpikeRegistered = false;
 			updateWeights=true;
 		}
 
-		if (updateWeights)
+		if (updateWeights && !presynapticLastSpikeRegistered && !postSynapticLastSpikeRegistered)
 		{
+			presynapticLastSpikeRegistered = true;
+			postSynapticLastSpikeRegistered = true;
 			double deltaW = STDPFunction(postsynapticLastSpike-presynapticLastSpike);
 			weight+=deltaW;
 			if (weight > weightMax)
@@ -76,12 +85,22 @@ public class STDPSynapse extends Synapse
 		}
 		else
 		{
-			return aMinus*Math.exp(x/tauMinus);
+			return -1*aMinus*Math.exp(x/tauMinus);
 		}
 	}
 
 	public double getWeight()
 	{
 		return weight;
+	}
+
+	public int getPresynapticLastSpike()
+	{
+		return presynapticLastSpike;
+	}
+
+	public int getPostsynapticLastSpike()
+	{
+		return postsynapticLastSpike;
 	}
 }
