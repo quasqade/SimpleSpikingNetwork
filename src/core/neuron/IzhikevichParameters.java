@@ -1,50 +1,43 @@
 package core.neuron;
 
 /*
-* IzhikevichParameters is a helper class to provide parameters to a constructor of IzhikevichNeuronModel
-* */
+ * IzhikevichParameters is a helper class to provide parameters to a constructor of IzhikevichNeuronModel
+ * */
 
-public class IzhikevichParameters
-{
-	private final double prA, prB, prC, prD, prV_th, prDt;
+public class IzhikevichParameters {
 
-	public IzhikevichParameters(double a, double b, double c, double d, double v_th, double dt)
-	{
-		this.prA=a;
-		this.prB=b;
-		this.prC=c;
-		this.prD=d;
-		this.prV_th=v_th;
-		this.prDt = dt;
-	}
+  private final double prA, prB, prC, prD, prV_th, prDt;
 
-	public double a()
-	{
-		return prA;
-	}
+  public IzhikevichParameters(double a, double b, double c, double d, double v_th, double dt) {
+    this.prA = a;
+    this.prB = b;
+    this.prC = c;
+    this.prD = d;
+    this.prV_th = v_th;
+    this.prDt = dt;
+  }
 
-	public double b()
-	{
-		return prB;
-	}
+  public double a() {
+    return prA;
+  }
 
-	public double c()
-	{
-		return prC;
-	}
+  public double b() {
+    return prB;
+  }
 
-	public double d()
-	{
-		return prD;
-	}
+  public double c() {
+    return prC;
+  }
 
-	public double v_th()
-	{
-		return prV_th;
-	}
+  public double d() {
+    return prD;
+  }
 
-	public double dt()
-	{
-		return prDt;
-	}
+  public double v_th() {
+    return prV_th;
+  }
+
+  public double dt() {
+    return prDt;
+  }
 }

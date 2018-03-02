@@ -1,6 +1,5 @@
 package core.synapse;
 
-public enum SynapseType
-{
-	SIMPLE, STDP
+public enum SynapseType {
+  SIMPLE, STDP
 }
