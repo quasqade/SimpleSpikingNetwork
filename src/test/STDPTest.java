@@ -9,6 +9,8 @@ import core.synapse.Synapse;
 import core.synapse.SynapseType;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
+import test.gui.LineChartFrame;
+import test.gui.XYChartFrame;
 
 import javax.swing.*;
 import java.util.ArrayList;

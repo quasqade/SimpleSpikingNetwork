@@ -1,5 +1,6 @@
 package core.neuron;
 
+import com.sun.istack.internal.NotNull;
 import core.synapse.STDPSynapse;
 import core.synapse.Spike;
 import core.synapse.Synapse;
@@ -87,6 +88,18 @@ public class Neuron
 
 		this.postSynapses.add(synapse);
 		neuron.addPreSynapse(synapse);
+	}
+
+	public Synapse getPostSynapse(Neuron neuron)
+	{
+		for (Synapse synapse: postSynapses
+			 )
+		{
+			if (synapse.getPostsynaptic().equals(neuron))
+				return synapse;
+		}
+
+		return null;
 	}
 
 

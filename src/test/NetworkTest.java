@@ -3,6 +3,7 @@ package test;
 import core.neuron.Neuron;
 import core.synapse.SynapseType;
 import org.jfree.data.xy.XYSeries;
+import test.gui.XYChartFrame;
 
 import javax.swing.*;
 import java.time.Duration;

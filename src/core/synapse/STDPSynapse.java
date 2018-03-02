@@ -103,4 +103,19 @@ public class STDPSynapse extends Synapse
 	{
 		return postsynapticLastSpike;
 	}
+
+	public void setWeightMin(double weightMin)
+	{
+		this.weightMin = weightMin;
+	}
+
+	public void setWeightMax(double weightMax)
+	{
+		this.weightMax = weightMax;
+	}
+
+	public void setWeight(double weight)
+	{
+		this.weight = weight;
+	}
 }

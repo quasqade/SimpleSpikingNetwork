@@ -1,4 +1,4 @@
-package test;
+package test.gui;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
