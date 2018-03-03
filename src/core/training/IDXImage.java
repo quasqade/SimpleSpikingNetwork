@@ -2,7 +2,10 @@ package core.training;
 
 /*IDXImage represents image stored in IDX format*/
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 public class IDXImage {
 
@@ -22,5 +25,20 @@ public class IDXImage {
 
   public int[] getPixels() {
     return pixels;
+  }
+
+  public IDXImage getDownscaled(int originalRows, int originalColumns, int newRows,
+      int newColumns) {
+    double scaleY = (double) newRows / (double) originalRows;
+    double scaleX = (double) newColumns / (double) originalColumns;
+    BufferedImage originalImage = getBufferedImage(originalRows, originalColumns);
+    AffineTransform transform = new AffineTransform();
+    transform.scale(scaleX, scaleY);
+    AffineTransformOp op = new AffineTransformOp(transform, null);
+    BufferedImage scaledImage = new BufferedImage(newColumns, newRows, originalImage.getType());
+    op.filter(originalImage, scaledImage);
+
+    int[] pixels = ((DataBufferInt) scaledImage.getRaster().getDataBuffer()).getData();
+    return new IDXImage(pixels);
   }
 }

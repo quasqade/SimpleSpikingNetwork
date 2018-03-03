@@ -34,6 +34,10 @@ public class IDXLabelReader {
       throw new IndexOutOfBoundsException();
     }
 
+    if (!initialized) {
+      throw new IOException();
+    }
+
     int label = inputFIS.read();
     currentLabel++;
     return label;

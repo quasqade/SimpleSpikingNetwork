@@ -22,9 +22,10 @@ public class SupervisedTest {
       int label;
 
       while ((image = imageReader.readNext()) != null) {
-        label = labelReader.readNext();
         BufferedImage bufferedImage = image
-            .getBufferedImage(imageReader.getRows(), imageReader.getColumns());
+            .getDownscaled(imageReader.getRows(), imageReader.getColumns(), 14, 14)
+            .getBufferedImage(14, 14);
+        label = labelReader.readNext();
         continue;
       }
       imageReader.close();
