@@ -12,11 +12,13 @@ public class FFNetwork {
 
   private List<Layer> layers;
   private Layer input, output;
+  private int globalDelay; //default delay that will be applied to all connections
 
 
-  public FFNetwork(int inputLayerSize) {
+  public FFNetwork(int inputLayerSize, int delay) {
     layers = new ArrayList<>();
-    layers.add(new Layer(inputLayerSize));
+    this.globalDelay=delay;
+    layers.add(new Layer(inputLayerSize, globalDelay));
     input = layers.get(0);
     output = layers.get(0);
   }

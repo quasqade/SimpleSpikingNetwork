@@ -4,6 +4,7 @@ import core.network.FFNetwork;
 import core.training.IDXImage;
 import core.training.IDXImageReader;
 import core.training.IDXLabelReader;
+import core.training.Trainer;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -11,8 +12,11 @@ import java.io.IOException;
 public class SupervisedTest {
 
   public static void main(String[] args) {
-    FFNetwork network = new FFNetwork(196);
+    FFNetwork network = new FFNetwork(196, 5); //odd delays are better for supervised training
     network.addNextLayer(300);
+
+    Trainer trainer = new Trainer(network);
+    trainer.loadIDXDataset(new File("train-images.idx3-ubyte"), new File("train-labels.idx1-ubyte"), 19, 10);
 
     try {
       IDXImageReader imageReader = new IDXImageReader(new File("train-images.idx3-ubyte"));

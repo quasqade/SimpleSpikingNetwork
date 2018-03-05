@@ -21,11 +21,16 @@ public class Layer {
 
   //constructor for creating a layer with new set of neurons of specified size
   public Layer(int neuronAmount) {
+    this(neuronAmount, 3);
+  }
+
+  //constructor for a layer with a new set of neurons of specified size and fixed delay
+  public Layer(int neuronAmount, int delay) {
     this();
 
     for (int i = 0; i < neuronAmount; i++) {
       neuronList.add(
-          new Neuron(Neuron.NeuronType.IZHIKEVICH, 3)); //TODO postsynaptic delay is chosen randomly
+          new Neuron(Neuron.NeuronType.IZHIKEVICH, delay)); //TODO postsynaptic delay is chosen randomly
     }
 
   }
