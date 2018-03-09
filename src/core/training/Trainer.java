@@ -4,8 +4,11 @@ package core.training;
  * stimulus for purposes of modifying weights according to dataset provided. Trainer works by extending
  * SwingWorker where interim results are published in the form of TrainingSample objects.*/
 
+import core.layer.Layer;
 import core.network.FFNetwork;
 import core.neuron.Neuron;
+import core.synapse.Spike;
+import core.synapse.Synapse;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,26 +74,46 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
   @Override
   protected Void doInBackground() throws Exception {
     //main cycle performs training until reaching iteration limit or desired error rate
+
+    //attach fake instantaneous synapses to input layer to feed data
+    for (Neuron neuron : network.inputLayer().getNeurons()
+        ) {
+      neuron.addPreSynapse(new Synapse(null, neuron, 1));
+    }
+
+    //run training
     for (int i = 0; i < parameters.getIterations(); i++) {
 
+      System.out.println("Running iteration " + i);
 
       //inner cycle is done per entry and processes each entry 2*trainStep times
       for (int j = 0; j < parameters.getTrainStep(); j++) {
 
-        int[] inputData = new int[0];
-        int correctAnswer=-1;
+        byte[] inputData = new byte[0];
+        int correctAnswer = -1;
         //first feed entry to the network
-        if (datasetType == DatasetType.IDX)
-        {
+        if (datasetType == DatasetType.IDX) {
           inputData = idxImageReader.readNext().getPixels();
           correctAnswer = idxLabelReader.readNext();
         }
 
         //convert entry data to input currents
+        for (int k = 0; k < network.inputLayer().getNeurons().size() - 1; k++) {
+          Synapse synapse = network.inputLayer().getNeurons().get(k).getPreSynapses().get(0);
+          synapse.addSpike(new Spike(inputData[k] + 127)); //add 127 to convert to unsigned value
+        }
 
-        //run network for network global delay * number of layers to ensure all neurons have time to fire
+        //run network for network global delay * number of layers - 1 to ensure all neurons have time to fire
 
-
+        for (int k = 0; k < network.getGlobalDelay() * (network.getLayers().size() - 1); k++) {
+          for (Layer layer : network.getLayers()
+              ) {
+            for (Neuron neuron : layer.getNeurons()
+                ) {
+              neuron.simulateTick();
+            }
+          }
+        }
 
         //TODO
 
@@ -98,9 +121,7 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
 
         //TODO
 
-
       }
-
 
       //TODO check error rate
     }

@@ -38,6 +38,8 @@ public class IDXImageReader {
     initialized = true;
   }
 
+
+  //reads IDX image and creates a new IDXImage object
   public IDXImage readNext() throws IOException, IndexOutOfBoundsException {
     if (!initialized) {
       return null;
@@ -54,7 +56,8 @@ public class IDXImageReader {
     }
 
     currentImage++;
-    return new IDXImage(pixels);
+
+    return new IDXImage(pixels, columns, rows);
   }
 
   public void close() throws IOException {

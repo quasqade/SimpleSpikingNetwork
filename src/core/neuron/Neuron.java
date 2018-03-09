@@ -46,7 +46,7 @@ public class Neuron {
       }
     }
 
-    //neuronModel.setI(I); //sets neural current to sum of arrived spike currents
+    neuronModel.setI(I); //sets neural current to sum of arrived spike currents
     neuronModel.recalculate(); //computes new state of a neuron
 
     //determine if spiking and if so, create a spike targeted for all postsynaptic neurons
