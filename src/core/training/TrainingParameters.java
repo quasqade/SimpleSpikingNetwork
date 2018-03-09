@@ -7,9 +7,10 @@ public class TrainingParameters {
   private double stopErrorRate; //when this error rate is reached, training will stop
   private int errorRateSamples; //how many last samples to use for estimating error rate
 
-  public TrainingParameters(int iterations, int trainStep, double stopErrorRate, int errorRateSamples) {
+  public TrainingParameters(int iterations, int trainStep, double stopErrorRate,
+      int errorRateSamples) {
     this.iterations = iterations;
-    this.trainStep=trainStep;
+    this.trainStep = trainStep;
     this.stopErrorRate = stopErrorRate;
     this.errorRateSamples = errorRateSamples;
   }

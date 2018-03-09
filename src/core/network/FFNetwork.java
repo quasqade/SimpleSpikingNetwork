@@ -4,6 +4,8 @@ package core.network;
  * with defined input and output layers. Conceptually it is a list of layers and methods providing access
  * to specific layers and neurons within*/
 
+//TODO store weights in file
+
 import core.layer.Layer;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ public class FFNetwork {
 
   public FFNetwork(int inputLayerSize, int delay) {
     layers = new ArrayList<>();
-    this.globalDelay=delay;
+    this.globalDelay = delay;
     layers.add(new Layer(inputLayerSize, globalDelay));
     input = layers.get(0);
     output = layers.get(0);
@@ -44,5 +46,9 @@ public class FFNetwork {
 
   public Layer outputLayer() {
     return output;
+  }
+
+  public int getGlobalDelay() {
+    return globalDelay;
   }
 }

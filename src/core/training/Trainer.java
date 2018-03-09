@@ -23,11 +23,11 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
   private int inputValues, outputValues;
   private List<List<Neuron>> outputNeuronGroups; //groups of output neurons where each group corresponds to one value
   private TrainingParameters parameters;
+
   //constructor accepts FFNetwork object that represents network to be trained
   public Trainer(FFNetwork network) {
     this.network = network;
   }
-
 
 
   //accepts MNIST formatted image and label files
@@ -50,19 +50,17 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
   }
 
   //form output neuron groups corresponding to amount of output values
-  private void splitOutputs(int outputValues)
-  {
-    List<Neuron> outputNeurons = network.getLayers().get(network.getLayers().size()-1).getNeurons();
+  private void splitOutputs(int outputValues) {
+    List<Neuron> outputNeurons = network.getLayers().get(network.getLayers().size() - 1)
+        .getNeurons();
     outputNeuronGroups = new ArrayList<>();
     int outputNeuronsAmount = outputNeurons.size();
-    int neuronsPerGroup = outputNeuronsAmount/outputValues;
+    int neuronsPerGroup = outputNeuronsAmount / outputValues;
 
-    int neuronCounter=0;
-    while (neuronCounter<outputNeuronsAmount)
-    {
+    int neuronCounter = 0;
+    while (neuronCounter < outputNeuronsAmount) {
       List<Neuron> groupList = new ArrayList<>();
-      for (int i = 0; i < neuronsPerGroup; i++)
-      {
+      for (int i = 0; i < neuronsPerGroup; i++) {
         groupList.add(outputNeurons.get(neuronCounter));
         neuronCounter++;
       }
@@ -72,9 +70,39 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
 
   @Override
   protected Void doInBackground() throws Exception {
-    for (int i = 0; i < parameters.getIterations(); i++)
-    {
+    //main cycle performs training until reaching iteration limit or desired error rate
+    for (int i = 0; i < parameters.getIterations(); i++) {
 
+
+      //inner cycle is done per entry and processes each entry 2*trainStep times
+      for (int j = 0; j < parameters.getTrainStep(); j++) {
+
+        int[] inputData = new int[0];
+        int correctAnswer=-1;
+        //first feed entry to the network
+        if (datasetType == DatasetType.IDX)
+        {
+          inputData = idxImageReader.readNext().getPixels();
+          correctAnswer = idxLabelReader.readNext();
+        }
+
+        //convert entry data to input currents
+
+        //run network for network global delay * number of layers to ensure all neurons have time to fire
+
+
+
+        //TODO
+
+        //then feed it again correcting weights by applying current
+
+        //TODO
+
+
+      }
+
+
+      //TODO check error rate
     }
     return null;
   }

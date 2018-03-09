@@ -16,7 +16,8 @@ public class SupervisedTest {
     network.addNextLayer(300);
 
     Trainer trainer = new Trainer(network);
-    trainer.loadIDXDataset(new File("train-images.idx3-ubyte"), new File("train-labels.idx1-ubyte"), 19, 10);
+    trainer.loadIDXDataset(new File("train-images.idx3-ubyte"), new File("train-labels.idx1-ubyte"),
+        19, 10);
 
     try {
       IDXImageReader imageReader = new IDXImageReader(new File("train-images.idx3-ubyte"));
