@@ -2,7 +2,11 @@ package core.layer;
 
 /*Layer represents a list of neurons for layered networks with methods to facilitate convenient connection*/
 
+import core.neuron.IzhikevichIC;
+import core.neuron.IzhikevichNeuronModel;
+import core.neuron.IzhikevichParameters;
 import core.neuron.Neuron;
+import core.neuron.Neuron.NeuronType;
 import core.synapse.STDPSynapse;
 import core.synapse.SynapseType;
 import java.util.ArrayList;
@@ -29,9 +33,11 @@ public class Layer {
     this();
 
     for (int i = 0; i < neuronAmount; i++) {
-      neuronList.add(
-          new Neuron(Neuron.NeuronType.IZHIKEVICH,
-              delay)); //TODO postsynaptic delay is chosen randomly
+      Neuron neuron = new Neuron(NeuronType.IZHIKEVICH, delay);
+      IzhikevichParameters params = new IzhikevichParameters(0.1, 0.2, -65, 2, 30, 0.1);
+      IzhikevichIC ic  = new IzhikevichIC(-65, params.b()*-65, 0);
+      neuron.setNeuronModel(new IzhikevichNeuronModel(params, ic));
+      neuronList.add(neuron);
     }
 
   }
@@ -78,7 +84,7 @@ public class Layer {
   }
 
   private void connectNeurons(Neuron presynaptic, Neuron postsynaptic) {
-    presynaptic.addPostsynapticNeuron(postsynaptic, SynapseType.STDP);
+    presynaptic.addPostsynapticNeuron(postsynaptic, SynapseType.InstSTDP);
     STDPSynapse synapse = (STDPSynapse) presynaptic.getPostSynapse(postsynaptic);
     synapse.setWeight(initialWeight);
     synapse.setWeightMin(minWeight);

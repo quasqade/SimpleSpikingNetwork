@@ -13,11 +13,11 @@ import java.io.IOException;
 public class SupervisedTest {
 
   public static void main(String[] args) {
-    FFNetwork network = new FFNetwork(196, 5); //odd delays are better for supervised training
+    FFNetwork network = new FFNetwork(196, 2); //odd delays are better for supervised training
     network.addNextLayer(300);
 
     Trainer trainer = new Trainer(network);
-    TrainingParameters parameters = new TrainingParameters(100, 2, 0.000001, 10);
+    TrainingParameters parameters = new TrainingParameters(100, 2, 0.000001, 10, 10);
     trainer.setTrainingParameters(parameters);
     trainer.loadIDXDataset(new File("train-images.idx3-ubyte"), new File("train-labels.idx1-ubyte"),
         19, 10);

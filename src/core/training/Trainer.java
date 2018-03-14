@@ -88,120 +88,137 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
       System.out.println("Running iteration " + i);
 
       //inner cycle is done per entry and processes each entry 2*trainStep times
-      for (int j = 0; j < parameters.getTrainStep(); j++) {
-
-        byte[] inputData = new byte[0];
-        int correctAnswer = -1;
-        //first feed entry to the network
-        if (datasetType == DatasetType.IDX) {
-          inputData = idxImageReader.readNext().getPixels();
-          correctAnswer = idxLabelReader.readNext();
-        }
-
-        //convert entry data to input currents
-        for (int k = 0; k < network.inputLayer().getNeurons().size() - 1; k++) {
-          Synapse synapse = network.inputLayer().getNeurons().get(k).getPreSynapses().get(0);
-          synapse.addSpike(new Spike(inputData[k] + 127)); //add 127 to convert to unsigned value
-        }
-
-        //run network for network global delay * number of layers - 1 to ensure all neurons have time to fire
-
-        for (int k = 0; k < network.getGlobalDelay() * (network.getLayers().size() - 1); k++) {
-
-          //simulate all neurons for a single tick
-          for (Layer layer : network.getLayers()
-              ) {
-            for (Neuron neuron : layer.getNeurons()
-                ) {
-              neuron.simulateTick();
-            }
-          }
-        }
-
-        //process output results
-        List<Neuron> holdList = new ArrayList<>(); //list of neurons that should have their weights preserved
-        List<Neuron> inList = new ArrayList<>(); //list of neurons that should be stimulated
-        List<Neuron> deList = new ArrayList<>(); //list of neurons that should be depressed
-
-        for (int l = 0; l < outputNeuronGroups.size() - 1; l++) {
-          if (l == correctAnswer) {
-            //if currently processed group corresponds to correct answer
-            int spikeCounter = 0;
-            for (Neuron neuron : outputNeuronGroups.get(l)
-                ) {
-              //add all spiking neurons to holdList
-              if (neuron.isSpiking()) {
-                holdList.add(neuron);
-                spikeCounter++;
-              }
-            }
-
-            //if desired inTarget is not reached, add inTarget-spikeCounter nonspiking neurons to inList
-            int x = inTarget - spikeCounter;
-            if (spikeCounter < inTarget) {
-              int neuronPointer = 0;
-              //add neurons until spikeCounter+inList has reached inTarget
-              while (x > 0) {
-                //get next neuron in the list
-                Neuron neuron = outputNeuronGroups.get(l).get(neuronPointer);
-                //if neuron has not spiked
-                if (!holdList.contains(neuron)) {
-                  //add it to inList
-                  inList.add(neuron);
-                  //decrease remaining neurons counter
-                  x--;
-                }
-                neuronPointer++;
-              }
-            }
-          } else {
-            //if currently processing group corresponding to wrong answer
-
-            //count how many neurons have spiked
-            int spikeCounter = 0;
-            for (Neuron neuron : outputNeuronGroups.get(l)
-                ) {
-              if (neuron.isSpiking()) {
-                spikeCounter++;
-              }
-            }
-
-            if (spikeCounter > deTarget) {
-              //if more neurons have spiked than maximum required by deTarget
-              int neuronPointer = 0;
-              int y = spikeCounter - deTarget;
-              //add neurons until deList has reached spikeCounter
-              while (y>0)
-              {
-                //get next neuron in the list
-                Neuron neuron = outputNeuronGroups.get(l).get(neuronPointer);
-                //if neuron has spiked
-                if (neuron.isSpiking()) {
-                  //add it to deList
-                  deList.add(neuron);
-                  //decrease remaining neurons counter
-                  y--;
-                }
-                neuronPointer++;
-              }
-            }
-          }
-        }
-
-        //TODO
-
-        //then feed it again correcting weights by applying current
-
-        //TODO
-
+      byte[] inputData = new byte[0];
+      int correctAnswer = -1;
+      //first feed entry to the network
+      if (datasetType == DatasetType.IDX) {
+        inputData = idxImageReader.readNext().getPixels();
+        correctAnswer = idxLabelReader.readNext();
       }
 
-      //TODO check error rate
-    }
-    return null;
-  }
+      //convert entry data to input currents
+      for (int k = 0; k < network.inputLayer().getNeurons().size() - 1; k++) {
+        Synapse synapse = network.inputLayer().getNeurons().get(k).getPreSynapses().get(0);
+        synapse.addSpike(new Spike(inputData[k] + 127)); //add 127 to convert to unsigned value
+      }
 
-  enum DatasetType {IDX}
+      //run network for network for sample processing time
+
+      for (int k = 0; k < parameters.getSampleProcessingTime(); k++) {
+
+        //simulate all neurons for a single tick
+        for (Layer layer : network.getLayers()
+            ) {
+          for (Neuron neuron : layer.getNeurons()
+              ) {
+            neuron.simulateTick();
+          }
+        }
+      }
+
+      //process output results
+      List<Neuron> holdList = new ArrayList<>(); //list of neurons that should have their weights preserved
+      List<Neuron> inList = new ArrayList<>(); //list of neurons that should be stimulated
+      List<Neuron> deList = new ArrayList<>(); //list of neurons that should be depressed
+
+      for (int l = 0; l < outputNeuronGroups.size() - 1; l++) {
+        if (l == correctAnswer) {
+          //if currently processed group corresponds to correct answer
+          int spikeCounter = 0;
+          for (Neuron neuron : outputNeuronGroups.get(l)
+              ) {
+            //add all spiking neurons to holdList
+            if (neuron.isSpiking()) {
+              holdList.add(neuron);
+              spikeCounter++;
+            }
+          }
+
+          System.out.println(spikeCounter + " output neurons have spiked in correct group");
+
+          //if desired inTarget is not reached, add inTarget-spikeCounter nonspiking neurons to inList
+          int x = inTarget - spikeCounter;
+          if (spikeCounter < inTarget) {
+            int neuronPointer = 0;
+            //add neurons until spikeCounter+inList has reached inTarget
+            while (x > 0) {
+              //get next neuron in the list
+              Neuron neuron = outputNeuronGroups.get(l).get(neuronPointer);
+              //if neuron has not spiked
+              if (!holdList.contains(neuron)) {
+                //add it to inList
+                inList.add(neuron);
+                //decrease remaining neurons counter
+                x--;
+              }
+              neuronPointer++;
+            }
+          }
+        } else {
+          //if currently processing group corresponding to wrong answer
+
+          //count how many neurons have spiked
+          int spikeCounter = 0;
+          for (Neuron neuron : outputNeuronGroups.get(l)
+              ) {
+            if (neuron.isSpiking()) {
+              spikeCounter++;
+            }
+          }
+
+          System.out.println(spikeCounter + " output neurons have spiked in incorrect group");
+
+          if (spikeCounter > deTarget) {
+            //if more neurons have spiked than maximum required by deTarget
+            int neuronPointer = 0;
+            int y = spikeCounter - deTarget;
+            //add neurons until deList has reached spikeCounter
+            while (y > 0) {
+              //get next neuron in the list
+              Neuron neuron = outputNeuronGroups.get(l).get(neuronPointer);
+              //if neuron has spiked
+              if (neuron.isSpiking()) {
+                //add it to deList
+                deList.add(neuron);
+                //decrease remaining neurons counter
+                y--;
+              }
+              neuronPointer++;
+            }
+          }
+        }
+      }
+
+      //TODO
+
+      //then feed it again correcting weights by applying current
+      for (int k = 0; k < parameters.getTrainStep(); k++) {
+
+        //feed data to inputs again
+        for (int j = 0; j < network.inputLayer().getNeurons().size() - 1; j++) {
+          Synapse synapse = network.inputLayer().getNeurons().get(j).getPreSynapses().get(0);
+          synapse.addSpike(new Spike(inputData[j] + 127)); //add 127 to convert to unsigned value
+        }
+
+        //simulate all neurons for a single tick
+        for (Layer layer : network.getLayers()
+            ) {
+          for (Neuron neuron : layer.getNeurons()
+              ) {
+            neuron.simulateTick();
+          }
+        }
+      }
+
+
+    }
+    //TODO
+
+  //TODO check error rate
+    return null;
+}
+
+enum DatasetType {IDX}
 
 
 }

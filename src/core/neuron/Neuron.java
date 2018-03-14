@@ -1,5 +1,6 @@
 package core.neuron;
 
+import core.synapse.InstantaneousSTDPSynapse;
 import core.synapse.STDPSynapse;
 import core.synapse.Spike;
 import core.synapse.Synapse;
@@ -45,7 +46,6 @@ public class Neuron {
         I += spike.getVoltage();
       }
     }
-
     neuronModel.setI(I); //sets neural current to sum of arrived spike currents
     neuronModel.recalculate(); //computes new state of a neuron
 
@@ -54,7 +54,8 @@ public class Neuron {
     if (neuronModel.isSpiking()) {
       for (Synapse postSynapse : postSynapses
           ) {
-        postSynapse.addSpike(new Spike(neuronModel.getV()));
+        Spike spike = new Spike(neuronModel.getV());
+        postSynapse.addSpike(spike);
       }
     }
   }
@@ -67,6 +68,9 @@ public class Neuron {
         break;
       case STDP:
         synapse = new STDPSynapse(this, neuron, postsynapticDelay);
+        break;
+      case InstSTDP:
+        synapse = new InstantaneousSTDPSynapse(this, neuron);
         break;
       default:
         System.err.println("Unrecognized synapse type!");

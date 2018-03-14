@@ -6,13 +6,15 @@ public class TrainingParameters {
   private int trainStep; //how many training steps are taken per data sample
   private double stopErrorRate; //when this error rate is reached, training will stop
   private int errorRateSamples; //how many last samples to use for estimating error rate
+  private int sampleProcessingTime; //how many cycles to run between first and last output
 
   public TrainingParameters(int iterations, int trainStep, double stopErrorRate,
-      int errorRateSamples) {
+      int errorRateSamples, int sampleProcessingTime) {
     this.iterations = iterations;
     this.trainStep = trainStep;
     this.stopErrorRate = stopErrorRate;
     this.errorRateSamples = errorRateSamples;
+    this.sampleProcessingTime = sampleProcessingTime;
   }
 
   public int getIterations() {
@@ -29,5 +31,10 @@ public class TrainingParameters {
 
   public int getTrainStep() {
     return trainStep;
+  }
+
+  public int getSampleProcessingTime()
+  {
+    return sampleProcessingTime;
   }
 }

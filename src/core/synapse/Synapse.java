@@ -61,4 +61,8 @@ public class Synapse {
   public Neuron getPostsynaptic() {
     return postsynaptic;
   }
+
+  public List<Spike> getSpikes() {
+    return spikes;
+  }
 }

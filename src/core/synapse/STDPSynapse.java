@@ -23,13 +23,13 @@ public class STDPSynapse extends Synapse {
     weightMin = -1;
     weightMax = 1;
 
-    weight = 0;
+    weight = 0.5;
   }
 
   //Replaces spike that has been added to a new one with voltage modified by synaptic weight
   @Override
   public void addSpike(Spike spike) {
-    super.addSpike(new Spike(spike.getVoltage() * 0, super.getDelay()));
+    super.addSpike(new Spike(spike.getVoltage()*weight, super.getDelay()));
   }
 
   //Adds weight modification rule to a synapse
