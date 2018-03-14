@@ -84,7 +84,7 @@ public class Layer {
   }
 
   private void connectNeurons(Neuron presynaptic, Neuron postsynaptic) {
-    presynaptic.addPostsynapticNeuron(postsynaptic, SynapseType.InstSTDP);
+    presynaptic.addPostsynapticNeuron(postsynaptic, SynapseType.STDP);
     STDPSynapse synapse = (STDPSynapse) presynaptic.getPostSynapse(postsynaptic);
     synapse.setWeight(initialWeight);
     synapse.setWeightMin(minWeight);
