@@ -59,6 +59,8 @@ public class IzhikevichNeuronModel implements NeuronModel {
   }
 
 
+
+
   //first equation in the Izhikevich model (multiplied by dt both sides)
   private double dv(double v, double u) {
     return dt * (0.04 * v * v + 5 * v + 140 - u + this.I);

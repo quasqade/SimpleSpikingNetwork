@@ -60,6 +60,27 @@ public class Neuron {
     }
   }
 
+  //same as simulateTick, except it does not calculate current from input spikes
+  public void simulateTickNoExternalCurrent()
+  {
+    //still need to propagate spikes to keep everything in sync
+    for (Synapse preSynapse: preSynapses
+    ) {
+      preSynapse.propagateSpikes();
+    }
+
+    //recalculate with a given current
+    neuronModel.recalculate();
+
+    if (neuronModel.isSpiking()) {
+      for (Synapse postSynapse : postSynapses
+          ) {
+        Spike spike = new Spike(neuronModel.getV());
+        postSynapse.addSpike(spike);
+      }
+    }
+  }
+
   public void addPostsynapticNeuron(Neuron neuron, SynapseType type) {
     Synapse synapse;
     switch (type) {

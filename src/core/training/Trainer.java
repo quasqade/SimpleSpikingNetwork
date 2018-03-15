@@ -104,29 +104,32 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
         synapse.addSpike(new Spike(inputData[k] + 127)); //add 127 to convert to unsigned value
       }
 
-      //run network for sample processing time
-
       Set<Neuron> spikeSet = new HashSet<>(); //set of output neurons that have spiked
 
-      for (int k = 0; k < parameters.getSampleProcessingTime(); k++) {
+      //simulate for 2 more T windows while checking for spikes
+      for (int k = 0; k < parameters.getSampleProcessingTime() * 2; k++) {
 
         //simulate all neurons except output for a single tick
-        for (int j = 0; j < network.getLayers().size()-2; j++) {
-          for (Neuron neuron: network.getLayers().get(j).getNeurons()
-          ) {
+        for (int j = 0; j < network.getLayers().size() - 2; j++) {
+          for (Neuron neuron : network.getLayers().get(j).getNeurons()
+              ) {
             neuron.simulateTick();
-          }
+            }
         }
+
+        //TODO delete
+        System.out.println(network.inputLayer().getNeurons().get(0).getNeuronModel().getV());
 
         //simulate all output neurons for a single tick and add them to spikeSet if they have spiked
-        for (Neuron neuron: network.outputLayer().getNeurons()
-        ) {
+        for (Neuron neuron : network.outputLayer().getNeurons()
+            ) {
           neuron.simulateTick();
-          if (neuron.isSpiking())
+          if (neuron.isSpiking()) {
+            System.out.println("Output neuron is spiking");
             spikeSet.add(neuron);
+          }
         }
-        }
-
+      }
 
       //process output results
       Set<Neuron> holdSet = new HashSet<>(); //set of neurons that should have their weights preserved
@@ -134,64 +137,59 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
       Set<Neuron> deSet = new HashSet<>(); //set of neurons that should be depressed
 
       //iterate over all groups putting neurons into corresponding sets
-      for (int j = 0; j < outputNeuronGroups.size()-1; j++) {
+      for (int j = 0; j < outputNeuronGroups.size() - 1; j++) {
         //in case currently processed group corresponds to correct answer
-        if (j==correctAnswer){
+        if (j == correctAnswer) {
           int spikeCounter = 0; //counts how many neurons have spiked
-          for (Neuron neuron: outputNeuronGroups.get(j)
-          ) {
-            if (spikeSet.contains(neuron))
-            {
+          for (Neuron neuron : outputNeuronGroups.get(j)
+              ) {
+            if (spikeSet.contains(neuron)) {
               holdSet.add(neuron);
               spikeCounter++;
             }
           }
 
           //check if enough neurons have spiked
-          if (spikeCounter<inTarget)
-          {
+          if (spikeCounter < inTarget) {
             //if not then add nonspiking neurons to inSet until desired inTarget is reached
-            for (Neuron neuron: outputNeuronGroups.get(j)
-            ) {
+            for (Neuron neuron : outputNeuronGroups.get(j)
+                ) {
               //check if neuron has already spiked
-              if (spikeSet.contains(neuron))
+              if (spikeSet.contains(neuron)) {
                 continue;
+              }
 
               //if not, then add it to inSet and increment spikeCounter
               inSet.add(neuron);
               spikeCounter++;
               //if desired target is reached, then stop further addition
-              if (spikeCounter>=inTarget)
-              {
+              if (spikeCounter >= inTarget) {
                 break;
               }
             }
           }
         }
         //in case currently processed group corresponds to wrong answer
-        else
-        {
+        else {
           int spikeCounter = 0; //counts how many neurons have spiked
-          for (Neuron neuron: outputNeuronGroups.get(j)
-          ) {
-            if (spikeSet.contains(neuron));
-            spikeCounter++;
+          for (Neuron neuron : outputNeuronGroups.get(j)
+              ) {
+            if (spikeSet.contains(neuron)) {
+              spikeCounter++;
+            }
           }
 
           //check if more neurons have spiked than allowed by deTarget
-          if (spikeCounter>deTarget)
-          {
+          if (spikeCounter > deTarget) {
             //if yes then add spiking neurons to deSet until target is reached
-            for (Neuron neuron: outputNeuronGroups.get(j)
-            ) {
-              if (spikeSet.contains(neuron))
-              {
+            for (Neuron neuron : outputNeuronGroups.get(j)
+                ) {
+              if (spikeSet.contains(neuron)) {
                 deSet.add(neuron);
                 spikeCounter--;
 
                 //check if desired target is reached
-                if (spikeCounter<=deTarget)
-                {
+                if (spikeCounter <= deTarget) {
                   break;
                 }
               }
@@ -202,10 +200,24 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
 
       //now we have three lists and will perform weight corrections
 
+      //simulate for one more T window before proceeding to training
+      for (int k = 0; k < parameters.getSampleProcessingTime(); k++) {
+        network.performIdleSimulation();
+      }
+
       //TODO
 
       //feed it again correcting weights by applying current
       for (int k = 0; k < parameters.getTrainStep(); k++) {
+
+        //first simulate network for one T window
+        simulateNetwork(parameters.getSampleProcessingTime());
+
+        //stimulate neurons in deSet to decrease associated weights
+        stimulateSet(deSet);
+
+        //simulate network for one more T window
+        simulateNetwork(parameters.getSampleProcessingTime());
 
         //feed data to inputs again
         for (int j = 0; j < network.inputLayer().getNeurons().size() - 1; j++) {
@@ -213,25 +225,82 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
           synapse.addSpike(new Spike(inputData[j] + 127)); //add 127 to convert to unsigned value
         }
 
-        //simulate all neurons for a single tick
-        for (Layer layer : network.getLayers()
-            ) {
-          for (Neuron neuron : layer.getNeurons()
-              ) {
-            neuron.simulateTick();
-          }
+        //simulate network for one more T window
+        simulateNetwork(parameters.getSampleProcessingTime());
+
+        //now stimulate neurons in inSet to decrease associated weights
+        stimulateSet(inSet);
+
+        //simulate network for three more T windows
+        simulateNetwork(parameters.getSampleProcessingTime() * 3);
+
+        //stimulate neurons in holdSet
+        stimulateSet(holdSet);
+
+        //simulate network for one more T window
+        simulateNetwork(parameters.getSampleProcessingTime());
+
+        //stimulate neurons in deSet to decrease associated weights
+        stimulateSet(deSet);
+
+        //simulate network for one more T window
+        simulateNetwork(parameters.getSampleProcessingTime());
+
+        //feed data to inputs again
+        for (int j = 0; j < network.inputLayer().getNeurons().size() - 1; j++) {
+          Synapse synapse = network.inputLayer().getNeurons().get(j).getPreSynapses().get(0);
+          synapse.addSpike(new Spike(inputData[j] + 127)); //add 127 to convert to unsigned value
         }
+
+        //simulate network for one more T window
+        simulateNetwork(parameters.getSampleProcessingTime());
+
+        //now stimulate neurons in inSet to decrease associated weights
+        stimulateSet(inSet);
+
+        //simulate network for one more T window
+        simulateNetwork(parameters.getSampleProcessingTime());
+
       }
 
 
     }
     //TODO
 
-  //TODO check error rate
+    //TODO check error rate
     return null;
-}
+  }
 
-enum DatasetType {IDX}
+  //stimulate all neurons in this set while idly simulating other
+  private void stimulateSet(Set<Neuron> set) {
+    for (Neuron neuron : set
+        ) {
+      neuron.getNeuronModel().setI(parameters.getStimulationCurrent());
+      neuron.simulateTickNoExternalCurrent();
+    }
+
+    //simulate all other neurons too
+    for (Layer layer : network.getLayers()
+        ) {
+      for (Neuron neuron : layer.getNeurons()
+          ) {
+        if (set.contains(neuron)) {
+          continue;
+        }
+
+        neuron.simulateTick();
+      }
+    }
+  }
+
+  //simulate network for a given number of cycles
+  private void simulateNetwork(int cycles) {
+    for (int j = 0; j < cycles; j++) {
+      network.performIdleSimulation();
+    }
+  }
+
+  enum DatasetType {IDX}
 
 
 }

@@ -7,14 +7,16 @@ public class TrainingParameters {
   private double stopErrorRate; //when this error rate is reached, training will stop
   private int errorRateSamples; //how many last samples to use for estimating error rate
   private int sampleProcessingTime; //how many cycles to run between first and last output
+  private double stimulationCurrent; //value of current used to guarantee or speed up spike of a given neuron
 
   public TrainingParameters(int iterations, int trainStep, double stopErrorRate,
-      int errorRateSamples, int sampleProcessingTime) {
+      int errorRateSamples, int sampleProcessingTime, double stimulationCurrent) {
     this.iterations = iterations;
     this.trainStep = trainStep;
     this.stopErrorRate = stopErrorRate;
     this.errorRateSamples = errorRateSamples;
     this.sampleProcessingTime = sampleProcessingTime;
+    this.stimulationCurrent=stimulationCurrent;
   }
 
   public int getIterations() {
@@ -36,5 +38,9 @@ public class TrainingParameters {
   public int getSampleProcessingTime()
   {
     return sampleProcessingTime;
+  }
+
+  public double getStimulationCurrent() {
+    return stimulationCurrent;
   }
 }

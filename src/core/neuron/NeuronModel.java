@@ -13,4 +13,5 @@ public interface NeuronModel {
   public void setI(double i);
 
   public void recalculate();
+
 }

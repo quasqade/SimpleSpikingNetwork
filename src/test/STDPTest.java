@@ -77,14 +77,14 @@ public class STDPTest {
       //TODO rewrite with parallel streams for better performance (at least simulation)
       for (Neuron presynaptic : presynapticList
           ) {
-        presynaptic.simulateTick();
+        presynaptic.simulateTickNoExternalCurrent();
         if (presynaptic.isSpiking()) {
           //System.out.println("Neuron " + presynapticList.indexOf(presynaptic) + " is spiking at " + i + " ms.");
           presynapticSpikes.add(i, presynapticList.indexOf(presynaptic));
         }
       }
 
-      postsynaptic.simulateTick();
+      postsynaptic.simulateTickNoExternalCurrent();
       postSynapticVoltage
           .addValue(postsynaptic.getNeuronModel().getV(), "Membrane Voltage", Integer.toString(i));
       if (postsynaptic.isSpiking()) {

@@ -7,6 +7,7 @@ package core.network;
 //TODO store weights in file
 
 import core.layer.Layer;
+import core.neuron.Neuron;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,5 +51,16 @@ public class FFNetwork {
 
   public int getGlobalDelay() {
     return globalDelay;
+  }
+
+  public void performIdleSimulation()
+  {
+    for (Layer layer: layers
+    ) {
+      for (Neuron neuron: layer.getNeurons()
+      ) {
+        neuron.simulateTick();
+      }
+    }
   }
 }

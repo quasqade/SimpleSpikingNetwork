@@ -34,7 +34,7 @@ public class Layer {
 
     for (int i = 0; i < neuronAmount; i++) {
       Neuron neuron = new Neuron(NeuronType.IZHIKEVICH, delay);
-      IzhikevichParameters params = new IzhikevichParameters(0.1, 0.2, -65, 2, 30, 0.1);
+      IzhikevichParameters params = new IzhikevichParameters(0.1, 0.2, -65, 2, 30, 0.1); //parameters for a fast spiking neuron
       IzhikevichIC ic  = new IzhikevichIC(-65, params.b()*-65, 0);
       neuron.setNeuronModel(new IzhikevichNeuronModel(params, ic));
       neuronList.add(neuron);
