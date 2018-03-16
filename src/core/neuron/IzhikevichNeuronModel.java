@@ -8,6 +8,8 @@ public class IzhikevichNeuronModel implements NeuronModel {
 
   private double v, u, I; //model state variables
   private double a, b, c, d, v_th, dt; //model parameters
+  private double preSpikeVoltage; //to get pre-reset voltage after spike
+  private IzhikevichIC initialConditions; //to reset
 
   private boolean spiking = false; //on the tick that neuron spikes this is set to true, otherwise false
 
@@ -39,6 +41,8 @@ public class IzhikevichNeuronModel implements NeuronModel {
     this.v = initialConditions.v();
     this.u = initialConditions.u();
     this.I = initialConditions.I();
+
+    this.initialConditions = initialConditions;
   }
 
   //recalculate performs recalculation of a model state for the next tick
@@ -50,6 +54,7 @@ public class IzhikevichNeuronModel implements NeuronModel {
     u += du(old_v, u);
 
     if (v > v_th) {
+      preSpikeVoltage=v;
       v = c;
       u += d;
       spiking = true;
@@ -91,4 +96,14 @@ public class IzhikevichNeuronModel implements NeuronModel {
     return u;
   }
 
+  public double getPreSpikeVoltage() {
+    return preSpikeVoltage;
+  }
+
+  public void reset()
+  {
+    this.v=initialConditions.v();
+    this.u=initialConditions.u();
+    this.I=initialConditions.I();
+  }
 }

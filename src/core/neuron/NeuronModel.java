@@ -14,4 +14,8 @@ public interface NeuronModel {
 
   public void recalculate();
 
+  public double getPreSpikeVoltage();
+
+  public void reset();
+
 }

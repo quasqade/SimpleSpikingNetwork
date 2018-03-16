@@ -17,32 +17,20 @@ public class SupervisedTest {
     network.addNextLayer(300);
 
     Trainer trainer = new Trainer(network);
-    TrainingParameters parameters = new TrainingParameters(100, 2, 0.000001, 10, 5, 100.0);
+    TrainingParameters parameters = new TrainingParameters(100, 2, 0.000001, 10, 10, 250.0);
     trainer.setTrainingParameters(parameters);
     trainer.loadIDXDataset(new File("train-images.idx3-ubyte"), new File("train-labels.idx1-ubyte"),
         19, 10);
+     trainer.execute();
+     while (!trainer.isDone())
+     {
+       try {
+         Thread.sleep(500);
+       } catch (InterruptedException e) {
+         e.printStackTrace();
+       }
+     }
 
-    try {
-      IDXImageReader imageReader = new IDXImageReader(new File("train-images.idx3-ubyte"));
-      IDXLabelReader labelReader = new IDXLabelReader(new File("train-labels.idx1-ubyte"));
-
-      trainer.execute();
-
-      IDXImage image;
-      int label;
-
-      while ((image = imageReader.readNext()) != null) {
-        BufferedImage bufferedImage = image
-            .getDownscaled(imageReader.getColumns(), imageReader.getRows(), 14, 14)
-            .getBufferedImage(14, 14);
-        label = labelReader.readNext();
-        continue;
-      }
-      imageReader.close();
-      labelReader.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
 
   }
 }

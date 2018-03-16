@@ -89,6 +89,18 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
 
       System.out.println("Running iteration " + i);
 
+      //reset neurons
+      for (Layer layer: network.getLayers()
+      ) {
+        for (Neuron neuron: layer.getNeurons()
+        ) {
+          neuron.reset();
+        }
+      }
+
+      //simulate network for two T windows
+      simulateNetwork(parameters.getSampleProcessingTime()*2);
+
       //inner cycle is done per entry and processes each entry 2*trainStep times
       byte[] inputData = new byte[0];
       int correctAnswer = -1;
@@ -106,6 +118,7 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
 
       Set<Neuron> spikeSet = new HashSet<>(); //set of output neurons that have spiked
 
+
       //simulate for 2 more T windows while checking for spikes
       for (int k = 0; k < parameters.getSampleProcessingTime() * 2; k++) {
 
@@ -117,19 +130,18 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
             }
         }
 
-        //TODO delete
-        System.out.println(network.inputLayer().getNeurons().get(0).getNeuronModel().getV());
 
         //simulate all output neurons for a single tick and add them to spikeSet if they have spiked
         for (Neuron neuron : network.outputLayer().getNeurons()
             ) {
           neuron.simulateTick();
           if (neuron.isSpiking()) {
-            System.out.println("Output neuron is spiking");
             spikeSet.add(neuron);
           }
         }
       }
+
+      System.out.println(spikeSet.size() + " output neurons have spiked");
 
       //process output results
       Set<Neuron> holdSet = new HashSet<>(); //set of neurons that should have their weights preserved
@@ -210,6 +222,15 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
       //feed it again correcting weights by applying current
       for (int k = 0; k < parameters.getTrainStep(); k++) {
 
+        //reset neurons
+        for (Layer layer: network.getLayers()
+            ) {
+          for (Neuron neuron: layer.getNeurons()
+              ) {
+            neuron.reset();
+          }
+        }
+
         //first simulate network for one T window
         simulateNetwork(parameters.getSampleProcessingTime());
 
@@ -261,6 +282,10 @@ public class Trainer extends SwingWorker<Void, TrainingSample> {
         //simulate network for one more T window
         simulateNetwork(parameters.getSampleProcessingTime());
 
+
+        //wait for 5 more T windows to recover state
+
+        simulateNetwork(parameters.getSampleProcessingTime()*5);
       }
 
 

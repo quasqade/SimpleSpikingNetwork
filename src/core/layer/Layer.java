@@ -60,11 +60,11 @@ public class Layer {
   }
 
   public void interconnectToPrevious(Layer layer) {
-    interconnectToPrevious(layer, 0.5);
+    interconnectToPrevious(layer, 5);
   }
 
   public void interconnectToPrevious(Layer layer, double initialWeight) {
-    interconnectToPrevious(layer, initialWeight, -1, 1);
+    interconnectToPrevious(layer, initialWeight, -1, 10);
   }
 
   public void interconnectToPrevious(Layer layer, double initialWeight, double minWeight,

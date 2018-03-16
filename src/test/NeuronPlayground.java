@@ -27,9 +27,9 @@ public class NeuronPlayground {
     neuron.addPreSynapse(synapse);
 
     int counter=0;
-    for (int i = 0; i < 100; i++) {
-      synapse.addSpike(new Spike(120));
-      for (int j = 0; j < 25; j++) {
+    for (int i = 0; i < 50; i++) {
+      synapse.addSpike(new Spike(200));
+      for (int j = 0; j < 50; j++) {
         counter++;
         neuron.simulateTick();
         synapticVoltage.addValue(neuron.getNeuronModel().getV(), "Membrane Voltage", (Integer)counter);

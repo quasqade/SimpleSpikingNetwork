@@ -20,6 +20,7 @@ public class Neuron {
   private List<Synapse> postSynapses; //postSynapses is a list of Synapses originating from this neuron
   private NeuronModel neuronModel; //neuronModel is a IzhikevichNeuronModel that performs simulation of neuron state
   private int postsynapticDelay; //postsynapticDelay determines what default delay should be used for axons
+  private int globalCycleCounter=0;
 
   public Neuron(NeuronType type, int postsynapticDelay) {
     preSynapses = new ArrayList<>();
@@ -54,10 +55,12 @@ public class Neuron {
     if (neuronModel.isSpiking()) {
       for (Synapse postSynapse : postSynapses
           ) {
-        Spike spike = new Spike(neuronModel.getV());
+        Spike spike = new Spike(neuronModel.getPreSpikeVoltage());
         postSynapse.addSpike(spike);
       }
     }
+
+    globalCycleCounter++;
   }
 
   //same as simulateTick, except it does not calculate current from input spikes
@@ -75,7 +78,7 @@ public class Neuron {
     if (neuronModel.isSpiking()) {
       for (Synapse postSynapse : postSynapses
           ) {
-        Spike spike = new Spike(neuronModel.getV());
+        Spike spike = new Spike(neuronModel.getPreSpikeVoltage());
         postSynapse.addSpike(spike);
       }
     }
@@ -141,6 +144,11 @@ public class Neuron {
 
   public List<Synapse> getPostSynapses() {
     return postSynapses;
+  }
+
+  public void reset()
+  {
+    neuronModel.reset();
   }
 
   public enum NeuronType {IZHIKEVICH}
