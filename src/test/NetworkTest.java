@@ -27,36 +27,13 @@ public class NetworkTest {
       neuronList.add(new Neuron(Neuron.NeuronType.IZHIKEVICH, 5));
     }
 
-    //randomly interconnect them
-    //TODO check if loops are allowed (currently assumed yes)
     Random random = new Random();
-    int connectionChance = 0; //chance (in percentages) that a given neuron pair will interconnect
-    for (int i = 0; i < neuronList.size(); i++) {
-      for (int j = 0; j < neuronList.size(); j++) {
-        if (i != j) {
-          continue; //do not connect neurons to themselves
-        }
-
-        if (random.nextInt(100) < connectionChance) {
-          //connect neuron i to j
-          neuronList.get(i).addPostsynapticNeuron(neuronList.get(j), SynapseType.SIMPLE);
-        }
-      }
-    }
 
     //simulate network for 1000 ms
     XYSeries dataset = new XYSeries("Simulation");
     Instant before = Instant.now();
 
-    //add random stimulations
-    int initialSpikeProbability = 20; //chance that a given neuron will be stimulated initially
-    for (Neuron neuron : neuronList
-        ) {
-      if (random.nextInt(100) < 20) {
-        //neuron.addIncomingSpike(new Spike(30, 2));
-      }
-    }
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 6000; i++) {
       //calculate thalamic input
       double I = 0;
       for (int j = 0; j < neuronList.size(); j++) {

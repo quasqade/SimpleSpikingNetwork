@@ -23,7 +23,7 @@ public class STDPSynapse extends Synapse {
     weightMin = -1;
     weightMax = 1;
 
-    weight = 0.5;
+    weight = 0;
   }
 
   //Replaces spike that has been added to a new one with voltage modified by synaptic weight

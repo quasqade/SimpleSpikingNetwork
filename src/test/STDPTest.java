@@ -14,6 +14,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYSeries;
 import test.gui.LineChartFrame;
 import test.gui.XYChartFrame;
+import test.gui.XYChartFrame.MarkerType;
 
 /**
  * Created by user on 21-Feb-18. This example uses one postsynaptic Izhikevich neuron firing at
@@ -116,7 +117,7 @@ public class STDPTest {
       @Override
       public void run() {
         new XYChartFrame(presynapticSpikes, "Presynaptic spikes", "Time (ms)", "Neuron",
-            XYChartFrame.MarkerType.TINY_DOT);
+            MarkerType.SMALL_CROSS);
       }
     });
 
