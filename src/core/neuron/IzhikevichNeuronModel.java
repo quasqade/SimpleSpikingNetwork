@@ -6,8 +6,8 @@ package core.neuron;
  */
 public class IzhikevichNeuronModel implements NeuronModel {
 
-  private double v, u, I; //model state variables
-  private double a, b, c, d, v_th, dt; //model parameters
+  protected double v, u, I; //model state variables
+  protected double a, b, c, d, v_th, dt; //model parameters
   private double preSpikeVoltage; //to get pre-reset voltage after spike
   private IzhikevichIC initialConditions; //to reset
 
@@ -67,12 +67,12 @@ public class IzhikevichNeuronModel implements NeuronModel {
 
 
   //first equation in the Izhikevich model (multiplied by dt both sides)
-  private double dv(double v, double u) {
+  protected double dv(double v, double u) {
     return dt * (0.04 * v * v + 5 * v + 140 - u + this.I);
   }
 
   //second equation in the Izhikevich model (multiplied by dt both sides)
-  private double du(double v, double u) {
+  protected double du(double v, double u) {
     return dt * (a * (b * v - u));
   }
 
@@ -105,5 +105,9 @@ public class IzhikevichNeuronModel implements NeuronModel {
     this.v=initialConditions.v();
     this.u=initialConditions.u();
     this.I=initialConditions.I();
+  }
+
+  public double getDt() {
+    return dt;
   }
 }
