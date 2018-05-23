@@ -1,5 +1,6 @@
 package core.neuron;
 
+import core.RandomSingleton;
 import core.synapse.InstantaneousSTDPSynapse;
 import core.synapse.STDPSynapse;
 import core.synapse.Spike;
@@ -7,6 +8,7 @@ import core.synapse.Synapse;
 import core.synapse.SynapseType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by user on 16-Feb-18. Neuron wraps around IzhikevichNeuronModel, adding connections to
@@ -30,6 +32,13 @@ public class Neuron {
 
       case IZHIKEVICH:
         neuronModel = new IzhikevichNeuronModel();
+        break;
+      case RANDOMIZED_IZHIKEVICH:
+        Random random = RandomSingleton.getInstance();
+        double randomModifier = Math.pow(random.nextDouble(),2);
+        IzhikevichParameters params = new IzhikevichParameters(0.02, 0.2, -65+15*randomModifier, 8-6*randomModifier, 30, 1);
+        IzhikevichIC ic = new IzhikevichIC(-65, params.b()*(-65), 0);
+        neuronModel = new IzhikevichNeuronModel(params, ic);
         break;
     }
   }
@@ -151,5 +160,5 @@ public class Neuron {
     neuronModel.reset();
   }
 
-  public enum NeuronType {IZHIKEVICH}
+  public enum NeuronType {IZHIKEVICH, RANDOMIZED_IZHIKEVICH}
 }

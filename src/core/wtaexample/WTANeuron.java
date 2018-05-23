@@ -28,4 +28,12 @@ public class WTANeuron {
       model.recalculate();
     }
   }
+
+  public void setI(double I){
+    model.setI(I);
+  }
+
+  public void addI(double I){
+    model.setI(model.getI()+I);
+  }
 }

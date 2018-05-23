@@ -22,7 +22,7 @@ public class NeuronPlayground {
     IzhikevichIC ic = new IzhikevichIC(-65, -13, 0);
     //IzhikevichParameters parameters = new IzhikevichParameters(0.1, 0.2, -65, 2, 30, 0.1); //fast spiking
     //IzhikevichParameters parameters = new IzhikevichParameters(0.02, 0.2, -65, 8, 30, 0.1); //regular spiking
-    IzhikevichParameters parameters = new IzhikevichParameters(0.02, 0.2, -50, 2, 30, 0.1); //regular spiking
+    IzhikevichParameters parameters = new IzhikevichParameters(0.02, 0.2, -50, 2, 30, 0.1); //chattering
 
     neuron.setNeuronModel(new IzhikevichNeuronModel(parameters, ic));
 

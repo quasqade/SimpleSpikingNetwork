@@ -16,7 +16,7 @@ public class WTAExample {
     trainer.setIDXLabelFile(new File("train-labels.idx1-ubyte"));
 
     try {
-      trainer.train(new WTATrainingParameters(28, 4));
+      trainer.train(new WTATrainingParameters(28, 4, 1, 2));
     } catch (IOException e) {
       e.printStackTrace();
     }

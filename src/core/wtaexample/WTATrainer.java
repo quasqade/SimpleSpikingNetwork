@@ -64,8 +64,15 @@ public class WTATrainer {
     //compress input down to n/k
     List<SpikeTrain> compressedInput = SpikeGenerator.compressSpikeTrains(rawTrain, parameters.getK());
 
-    //feed input to first layer while simulating network and simulatenously form
-
+    //feed input to first layer while simulating network and simultaneously form inputs for next layer
+    for (int i = 0; i < parameters.getN()/parameters.getK(); i++) {
+      for (int j = 0; j < parameters.getK(); j++) {
+        WTANeuron neuron = network.getLayers().get(0).get(j);
+        if (compressedInput.get(i).hasSpikeAt(j))
+          neuron.addI(5);
+      }
+    }
+return 0;
   }
 
 }
